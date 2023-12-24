@@ -18,14 +18,12 @@ public class NotebookFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NotebookViewModel notificationsViewModel =
+        NotebookViewModel notebookViewModel =
                 new ViewModelProvider(this).get(NotebookViewModel.class);
 
         binding = FragmentNotebookBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

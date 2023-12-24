@@ -18,14 +18,12 @@ public class RemindersFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        RemindersViewModel dashboardViewModel =
+        RemindersViewModel remindersViewModel =
                 new ViewModelProvider(this).get(RemindersViewModel.class);
 
         binding = FragmentRemindersBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
