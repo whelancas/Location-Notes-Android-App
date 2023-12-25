@@ -6,79 +6,61 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/homeMapView"
-        android:layout_width="342dp"
-        android:layout_height="356dp"
-        android:layout_marginStart="34dp"
-        android:layout_marginEnd="35dp"
-        android:layout_marginBottom="80dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <TextView
         android:id="@+id/homeDistanceTravelledTodayTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginBottom="192dp"
+        android:layout_marginTop="84dp"
+        android:layout_marginEnd="216dp"
+        android:layout_marginBottom="14dp"
         android:text="Distance Travelled Today: "
-        app:layout_constraintBottom_toTopOf="@+id/homeMapView"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/homeCurrentLocationTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/homeCurrentLocationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginBottom="160dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="268dp"
+        android:layout_marginBottom="14dp"
         android:text="Current Location: "
-        app:layout_constraintBottom_toTopOf="@+id/homeMapView"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/homeAddReminderButton"
-        android:layout_width="122dp"
-        android:layout_height="71dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginBottom="12dp"
-        android:text="Add Reminder"
-        app:layout_constraintBottom_toTopOf="@+id/homeMapView"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/homeAddNoteButton"
-        android:layout_width="106dp"
-        android:layout_height="70dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="12dp"
-        android:text="Add Note"
-        app:layout_constraintBottom_toTopOf="@+id/homeMapView"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/homeStartExerciseButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/homeDistanceTravelledTodayTextView" />
 
     <Button
         android:id="@+id/homeStartExerciseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="38dp"
+        android:layout_marginTop="14dp"
         android:layout_marginEnd="18dp"
-        android:layout_marginBottom="14dp"
+        android:layout_marginBottom="533dp"
+        android:onClick="onStartExerciseClick"
         android:text="Start Exercise"
-        app:layout_constraintBottom_toTopOf="@+id/homeAddReminderButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/homeStopExerciseButton"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/homeCurrentLocationTextView" />
 
     <Button
         android:id="@+id/homeStopExerciseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="18dp"
-        android:layout_marginEnd="41dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="29dp"
+        android:layout_marginEnd="38dp"
+        android:layout_marginBottom="518dp"
+        android:onClick="onStopExerciseClick"
         android:text="Stop  Exercise"
-        app:layout_constraintBottom_toTopOf="@+id/homeAddNoteButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/homeStartExerciseButton" />
+        app:layout_constraintStart_toEndOf="@+id/homeStartExerciseButton"
+        app:layout_constraintTop_toBottomOf="@+id/homeCurrentLocationTextView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.example.mdpcw2;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,9 +13,11 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
@@ -25,10 +28,17 @@ public class LocationService extends Service implements LocationListener {
     private static final String CHANNEL_ID = "LocationService Channel";
     private static final CharSequence CHANNEL_NAME = "Location Updates";
     private LocationManager locationManager;
+    private final IBinder binder = new LocalBinder();
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return binder;
+    }
+
+    public class LocalBinder extends Binder {
+        public LocationService getService() {
+            return LocationService.this;
+        }
     }
 
     @Override
@@ -51,15 +61,19 @@ public class LocationService extends Service implements LocationListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Set up the LocationManager and request location updates here
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        MyLocationListener locationListener = new MyLocationListener();
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    MIN_TIME_BETWEEN_UPDATES,
-                    MIN_DISTANCE_CHANGE_FOR_UPDATES,
-                    this
-            );
+            try {
+                locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        MIN_TIME_BETWEEN_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES,
+                        locationListener);
+            } catch(SecurityException e) {
+                Log.d("comp3018", e.toString());
+            }
         }
 
         // Create a notification for the foreground service
@@ -72,13 +86,14 @@ public class LocationService extends Service implements LocationListener {
     }
 
     private Notification buildNotification() {
-        Intent notificationIntent = new Intent(this, MainActivity.class); // Replace with your activity
+        Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent =
-                PendingIntent.getActivity(this, 0, notificationIntent, 0);
+                PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("GeoTracker")
                 .setContentText("Tracking your location.")
+                .setSmallIcon(R.drawable.ic_launcher_background)
                 .setContentIntent(pendingIntent)
                 .build();
     }
@@ -117,4 +132,29 @@ public class LocationService extends Service implements LocationListener {
             locationManager.removeUpdates(this);
         }
     }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        stopForeground(STOP_FOREGROUND_DETACH);
+        stopSelf();
+        System.exit(0);
+    }
+
+    // Check if a service is running
+    public static boolean isServiceRunning(Context context, Class<?> serviceClass) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+
+        if (activityManager != null) {
+            for (ActivityManager.RunningServiceInfo service : activityManager.getRunningServices(Integer.MAX_VALUE)) {
+                if (serviceClass.getName().equals(service.service.getClassName())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }
+
+
