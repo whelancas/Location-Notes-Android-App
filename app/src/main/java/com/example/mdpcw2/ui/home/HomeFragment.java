@@ -105,9 +105,8 @@ public class HomeFragment extends Fragment {
         Log.d("mdpcw2", "Stop Button");
         if(mBound) {
 
-            // Stop the service as a foreground service
-            mService.stopForeground(true);
-            mService.stopSelf();
+            Intent serviceIntent = new Intent(requireActivity(), LocationService.class);
+            requireActivity().unbindService(serviceConnection);
             mBound = false;
         }
 
