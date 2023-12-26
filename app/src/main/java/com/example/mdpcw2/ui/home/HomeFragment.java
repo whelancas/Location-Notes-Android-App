@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -19,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mdpcw2.LocationService;
+import com.example.mdpcw2.MyLocationListener;
 import com.example.mdpcw2.R;
 import com.example.mdpcw2.databinding.FragmentHomeBinding;
 
@@ -27,8 +29,9 @@ import java.util.Objects;
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
-    boolean mBound;
+    boolean mBound = false;
     private LocationService mService;
+    private MyLocationListener locationListener;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -75,6 +78,7 @@ public class HomeFragment extends Fragment {
         public void onServiceConnected(ComponentName name, IBinder service) {
             LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
             mService = binder.getService();
+            locationListener = mService.getLocationListener();
             mBound = true;
             Log.d("mdpcw2", "Service connected");
         }
@@ -105,7 +109,6 @@ public class HomeFragment extends Fragment {
         Log.d("mdpcw2", "Stop Button");
         if(mBound) {
 
-            Intent serviceIntent = new Intent(requireActivity(), LocationService.class);
             requireActivity().unbindService(serviceConnection);
             mBound = false;
         }

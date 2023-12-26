@@ -1,11 +1,15 @@
 package com.example.mdpcw2;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.Manifest;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
                     MY_PERMISSIONS_REQUEST_LOCATION);
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent intent = new Intent(this, LocationService.class);
+            startForegroundService(intent);
+        }
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -52,13 +61,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d("mdpcw2", "Location permission given");
         if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, you can now proceed with location-related tasks
-                // ...
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Intent intent = new Intent(this, LocationService.class);
+                    startForegroundService(intent);
+                }
             } else {
-                // Permission denied, handle accordingly
-                // ...
+                Toast toast = Toast.makeText(this, "App needs location permission", Toast.LENGTH_SHORT);
+                toast.show();
             }
         }
     }

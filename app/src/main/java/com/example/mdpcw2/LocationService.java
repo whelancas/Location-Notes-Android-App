@@ -22,13 +22,18 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
-public class LocationService extends Service implements LocationListener {
+public class LocationService extends Service {
     private static final long MIN_TIME_BETWEEN_UPDATES = 5;
     private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 5;
     private static final String CHANNEL_ID = "LocationService Channel";
     private static final CharSequence CHANNEL_NAME = "Location Updates";
     private LocationManager locationManager;
     private final IBinder binder = new LocalBinder();
+    MyLocationListener locationListener = new MyLocationListener();
+
+    public MyLocationListener getLocationListener() {
+        return locationListener;
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -45,23 +50,27 @@ public class LocationService extends Service implements LocationListener {
     public void onCreate() {
         super.onCreate();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
+        createNotificationChannel();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Set up the LocationManager and request location updates here
+        Log.d("mdpcw2", "LocationService: onStartCommand");
+
+        // Create a notification for the foreground service
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle(CHANNEL_ID)
+                .setContentText(CHANNEL_NAME)
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .build();
+        Log.d("mdpcw2", "Create notification");
+
+        // Start the service as a foreground service
+        startForeground(1, notification);
+        Log.d("mdpcw2", "Start foreground service");
+
+        // Location management from Coursework Specification
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        MyLocationListener locationListener = new MyLocationListener();
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -71,54 +80,27 @@ public class LocationService extends Service implements LocationListener {
                         MIN_TIME_BETWEEN_UPDATES,
                         MIN_DISTANCE_CHANGE_FOR_UPDATES,
                         locationListener);
+                Log.d("mdpcw2", "Service requested location");
             } catch(SecurityException e) {
                 Log.d("comp3018", e.toString());
             }
         }
 
-        // Create a notification for the foreground service
-        Notification notification = buildNotification();
-
-        // Start the service as a foreground service
-        startForeground(1, notification);
-
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
-    private Notification buildNotification() {
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = CHANNEL_ID;
+            String description = (String) CHANNEL_NAME;
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
 
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("GeoTracker")
-                .setContentText("Tracking your location.")
-                .setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentIntent(pendingIntent)
-                .build();
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        // Handle location updates here
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-        // Do something with the latitude and longitude
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        // Handle status changes if needed
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        // Handle provider enabled
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        // Handle provider disabled
+            Log.d("mdpcw2", "Create notification channel");
+        }
     }
 
     @Override
@@ -129,7 +111,7 @@ public class LocationService extends Service implements LocationListener {
 
         // Stop location updates when the service is destroyed
         if (locationManager != null) {
-            locationManager.removeUpdates(this);
+            locationManager.removeUpdates((LocationListener) this);
         }
     }
 
@@ -141,8 +123,8 @@ public class LocationService extends Service implements LocationListener {
         System.exit(0);
     }
 
-    // Check if a service is running
     public static boolean isServiceRunning(Context context, Class<?> serviceClass) {
+        // Check if a service is running
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 
         if (activityManager != null) {
