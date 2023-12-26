@@ -55,7 +55,7 @@ public class LocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("mdpcw2", "LocationService: onStartCommand");
+        Log.d("Service", "onStartCommand called");
 
         // Create a notification for the foreground service
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -63,11 +63,11 @@ public class LocationService extends Service {
                 .setContentText(CHANNEL_NAME)
                 .setSmallIcon(R.drawable.ic_launcher_background)
                 .build();
-        Log.d("mdpcw2", "Create notification");
+        Log.d("Service", "Create notification");
 
         // Start the service as a foreground service
         startForeground(1, notification);
-        Log.d("mdpcw2", "Start foreground service");
+        Log.d("Service", "Start foreground service");
 
         // Location management from Coursework Specification
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -80,9 +80,9 @@ public class LocationService extends Service {
                         MIN_TIME_BETWEEN_UPDATES,
                         MIN_DISTANCE_CHANGE_FOR_UPDATES,
                         locationListener);
-                Log.d("mdpcw2", "Service requested location");
+                Log.d("Service", "Service requested location");
             } catch(SecurityException e) {
-                Log.d("comp3018", e.toString());
+                Log.d("Service", e.toString());
             }
         }
 
@@ -99,7 +99,7 @@ public class LocationService extends Service {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
 
-            Log.d("mdpcw2", "Create notification channel");
+            Log.d("Service", "Create notification channel");
         }
     }
 

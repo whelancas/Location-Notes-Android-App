@@ -15,28 +15,28 @@ public class MyLocationListener implements LocationListener {
 
         lastKnownLocation = location;
 
-        Log.d("comp3018", latitude + " " + longitude);
+        Log.d("Location", latitude + " " + longitude);
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // Handle status changes if needed
 
-        Log.d("comp3018", "onStatusChanged: " + provider + " " + status);
+        Log.d("Location", "onStatusChanged: " + provider + " " + status);
     }
 
     @Override
     public void onProviderEnabled(String provider) {
         // Handle provider enabled
 
-        Log.d("comp3018", "onProviderEnabled: " + provider);
+        Log.d("Location", "onProviderEnabled: " + provider);
     }
 
     @Override
     public void onProviderDisabled(String provider) {
         // Handle provider disabled
 
-        Log.d("comp3018", "onProviderDisabled: " + provider);
+        Log.d("Location", "onProviderDisabled: " + provider);
 
     }
 

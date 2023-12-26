@@ -84,19 +84,19 @@ public class HomeFragment extends Fragment {
             mService = binder.getService();
             locationListener = mService.getLocationListener();
             mBound = true;
-            Log.d("mdpcw2", "Service connected");
+            Log.d("Service", "Service connected");
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             mBound = false;
-            Log.d("mdpcw2", "Service disconnected");
+            Log.d("Service", "Service disconnected");
         }
     };
 
 
     public void onStartExerciseClick(View v) {
-        Log.d("mdpcw2", "Start Button");
+        Log.d("Button", "Home Start Button");
         if(!mBound) {
             Intent serviceIntent = new Intent(requireActivity(), LocationService.class);
             requireActivity().bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
@@ -106,7 +106,7 @@ public class HomeFragment extends Fragment {
                 if (lastKnownLocation != null) {
                     double latitude = lastKnownLocation.getLatitude();
                     double longitude = lastKnownLocation.getLongitude();
-                    Log.d("mdpcw2", "Last known location: " + latitude + " " + longitude);
+                    Log.d("Location", "Last known location: " + latitude + " " + longitude);
                     getCompleteAddressString(latitude, longitude);
                 }
             }
@@ -114,7 +114,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void onStopExerciseClick(View v) {
-        Log.d("mdpcw2", "Stop Button");
+        Log.d("Button", "Home Stop Button");
         if(mBound) {
             requireActivity().unbindService(serviceConnection);
             mBound = false;
@@ -141,7 +141,7 @@ public class HomeFragment extends Fragment {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.w("Address", "Cannot get Address");
+            Log.w("Address", "Cannot Get Address");
         }
         return strAdd;
     }
