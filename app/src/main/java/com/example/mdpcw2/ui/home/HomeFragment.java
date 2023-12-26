@@ -4,6 +4,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -24,6 +26,8 @@ import com.example.mdpcw2.MyLocationListener;
 import com.example.mdpcw2.R;
 import com.example.mdpcw2.databinding.FragmentHomeBinding;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class HomeFragment extends Fragment {
@@ -96,25 +100,6 @@ public class HomeFragment extends Fragment {
         if(!mBound) {
             Intent serviceIntent = new Intent(requireActivity(), LocationService.class);
             requireActivity().bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-        }
-
-        if (LocationService.isServiceRunning(requireActivity(), LocationService.class)) {
-            Log.d("mdpcw2", "Service running");
-        } else {
-            Log.d("mdpcw2", "Service not running");
-        }
-    }
-
-    public void onStopExerciseClick(View v) {
-        Log.d("mdpcw2", "Stop Button");
-        if(mBound) {
-
-            requireActivity().unbindService(serviceConnection);
-            mBound = false;
-        }
-
-        if (LocationService.isServiceRunning(requireActivity(), LocationService.class)) {
-            Log.d("mdpcw2", "Service running");
 
             if (locationListener != null) {
                 Location lastKnownLocation = locationListener.getLastKnownLocation();
@@ -122,12 +107,43 @@ public class HomeFragment extends Fragment {
                     double latitude = lastKnownLocation.getLatitude();
                     double longitude = lastKnownLocation.getLongitude();
                     Log.d("mdpcw2", "Last known location: " + latitude + " " + longitude);
+                    getCompleteAddressString(latitude, longitude);
                 }
             }
-        } else {
-            Log.d("mdpcw2", "Service not running");
+        }
+    }
+
+    public void onStopExerciseClick(View v) {
+        Log.d("mdpcw2", "Stop Button");
+        if(mBound) {
+            requireActivity().unbindService(serviceConnection);
+            mBound = false;
         }
 
+    }
+
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(requireActivity(), Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                Log.w("Address", strReturnedAddress.toString());
+            } else {
+                Log.w("Address", "No Address returned");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.w("Address", "Cannot get Address");
+        }
+        return strAdd;
     }
 
     @Override
