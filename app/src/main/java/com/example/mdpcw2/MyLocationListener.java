@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class MyLocationListener implements LocationListener {
+    private Location lastKnownLocation;
     @Override
     public void onLocationChanged(Location location) {
         // Handle location updates here
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
+
+        lastKnownLocation = location;
 
         Log.d("comp3018", latitude + " " + longitude);
     }
@@ -35,5 +38,9 @@ public class MyLocationListener implements LocationListener {
 
         Log.d("comp3018", "onProviderDisabled: " + provider);
 
+    }
+
+    public Location getLastKnownLocation() {
+        return lastKnownLocation;
     }
 }

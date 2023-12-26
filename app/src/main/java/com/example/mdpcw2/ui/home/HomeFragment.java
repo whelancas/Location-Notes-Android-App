@@ -115,6 +115,15 @@ public class HomeFragment extends Fragment {
 
         if (LocationService.isServiceRunning(requireActivity(), LocationService.class)) {
             Log.d("mdpcw2", "Service running");
+
+            if (locationListener != null) {
+                Location lastKnownLocation = locationListener.getLastKnownLocation();
+                if (lastKnownLocation != null) {
+                    double latitude = lastKnownLocation.getLatitude();
+                    double longitude = lastKnownLocation.getLongitude();
+                    Log.d("mdpcw2", "Last known location: " + latitude + " " + longitude);
+                }
+            }
         } else {
             Log.d("mdpcw2", "Service not running");
         }
