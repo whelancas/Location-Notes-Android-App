@@ -36,11 +36,9 @@ public class HomeFragment extends Fragment {
     HomeViewModel homeViewModel;
     boolean mBound = false;
     private MyLocationListener locationListener;
-    TextView startLocation;
-    TextView endLocation;
+    TextView startLocation, endLocation, distanceTravelled;
     Location lastKnownLocation;
-    double latitude;
-    double longitude;
+    double latitude, startLatitude, endLatitude, longitude, startLongitude, endLongitude;
     String address;
 
 
@@ -67,6 +65,7 @@ public class HomeFragment extends Fragment {
         Button stopExerciseButton = view.findViewById(R.id.homeStopExerciseButton);
         startLocation = (TextView) view.findViewById(R.id.homeStartLocationTextView);
         endLocation = (TextView) view.findViewById(R.id.homeEndLocationTextView);
+        distanceTravelled = (TextView) view.findViewById(R.id.homeDistanceTravelledTodayTextView);
 
         startExerciseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +115,11 @@ public class HomeFragment extends Fragment {
             String startLocationText = "Start Location: " + address;
             homeViewModel.setStartLocation(address);
             startLocation.setText(startLocationText);
+
+            startLatitude = latitude;
+            startLongitude = longitude;
+            // TODO: ViewModel these
+            // TODO: Clear previous exercise
         } else {
             Log.d("Address", "Address null onStartButton");
         }
@@ -129,25 +133,40 @@ public class HomeFragment extends Fragment {
             String endLocationText = "End Location: " + address;
             homeViewModel.setEndLocation(address);
             endLocation.setText(endLocationText);
+
+            endLatitude = latitude;
+            endLongitude = longitude;
+            // TODO: ViewModel these
+
+            Location startPoint=new Location("Start");
+            startPoint.setLatitude(startLatitude);
+            startPoint.setLongitude(startLongitude);
+
+            Location endPoint=new Location("End");
+            endPoint.setLatitude(endLatitude);
+            endPoint.setLongitude(endLongitude);
+
+            double distance = startPoint.distanceTo(endPoint);
+            distanceTravelled.setText("Distance Travelled: " + (int) distance + " metres");
+            //TODO: ViewModel this
         } else {
             Log.d("Address", "Address null onStartButton");
         }
     }
 
-    public String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
-        String strAdd = "";
+    public StringBuilder getAddress(double LATITUDE, double LONGITUDE) {
         Geocoder geocoder = new Geocoder(requireActivity(), Locale.getDefault());
+        StringBuilder strAddress = null;
         try {
             List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
             if (addresses != null) {
                 Address returnedAddress = addresses.get(0);
-                StringBuilder strReturnedAddress = new StringBuilder("");
+                strAddress = new StringBuilder("");
 
                 for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
-                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                    strAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
-                strAdd = strReturnedAddress.toString();
-                Log.w("Address", "getCompleteStringAddress: "+strReturnedAddress.toString());
+                Log.w("Address", "getCompleteStringAddress: " + strAddress);
             } else {
                 Log.w("Address", "No Address Returned");
             }
@@ -155,17 +174,17 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
             Log.w("Address", "Cannot Get Address");
         }
-        return strAdd;
+        return strAddress;
     }
 
     public void lastLocation() {
         if (locationListener != null) {
             lastKnownLocation = locationListener.getLastKnownLocation();
             if (lastKnownLocation != null) {
-                Log.d("Location", "lastLocation: "+String.valueOf(lastKnownLocation));
+                Log.d("Location", "lastLocation: "+ lastKnownLocation);
                 latitude = lastKnownLocation.getLatitude();
                 longitude = lastKnownLocation.getLongitude();
-                address = getCompleteAddressString(latitude, longitude);
+                address = String.valueOf(getAddress(latitude, longitude));
             }
         }
     }
