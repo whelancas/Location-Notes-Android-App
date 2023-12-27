@@ -14,14 +14,14 @@ import com.example.mdpcw2.LocationService;
 
 public class HomeViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mCurrentLocationText = new MutableLiveData<>();
+    private final MutableLiveData<String> mStartLocationText = new MutableLiveData<>();
 
-    public LiveData<String> getCurrentLocationText() {
-        return mCurrentLocationText;
+    public LiveData<String> getStartLocationText() {
+        return mStartLocationText;
     }
 
-    public void setCurrentLocation(String location) {
-        mCurrentLocationText.setValue(location);
+    public void setStartLocation(String location) {
+        mStartLocationText.setValue(location);
     }
 
 }

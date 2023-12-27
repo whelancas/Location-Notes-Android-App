@@ -1,5 +1,6 @@
 package com.example.mdpcw2.ui.home;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -28,7 +29,6 @@ import com.example.mdpcw2.databinding.FragmentHomeBinding;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
@@ -36,7 +36,7 @@ public class HomeFragment extends Fragment {
     HomeViewModel homeViewModel;
     boolean mBound = false;
     private MyLocationListener locationListener;
-    TextView currentLocation;
+    TextView startLocation;
     Location lastKnownLocation;
     double latitude;
     double longitude;
@@ -64,7 +64,7 @@ public class HomeFragment extends Fragment {
 
         Button startExerciseButton = view.findViewById(R.id.homeStartExerciseButton);
         Button stopExerciseButton = view.findViewById(R.id.homeStopExerciseButton);
-        currentLocation = (TextView) view.findViewById(R.id.homeCurrentLocationTextView);
+        startLocation = (TextView) view.findViewById(R.id.homeStartLocationTextView);
 
         startExerciseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,15 +111,16 @@ public class HomeFragment extends Fragment {
         lastLocation();
 
         if (address != null) {
-            currentLocation.setText(address);
+            String startLocationText = "Start Location: " + address;
+            homeViewModel.setStartLocation(startLocationText);
+            startLocation.setText(startLocationText);
         } else {
-            Log.d("Test1", "Address null");
+            Log.d("Address", "Address null onStartButton");
         }
     }
 
     public void onStopExerciseClick(View v) {
         Log.d("Button", "Home Stop Button");
-        Log.d("Test1", "onStopButtonClick: "+address);
 
     }
 
@@ -136,7 +137,7 @@ public class HomeFragment extends Fragment {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
                 strAdd = strReturnedAddress.toString();
-                Log.w("Test1", "getCompleteStringAddress: "+strReturnedAddress.toString());
+                Log.w("Address", "getCompleteStringAddress: "+strReturnedAddress.toString());
             } else {
                 Log.w("Address", "No Address returned");
             }
@@ -151,12 +152,10 @@ public class HomeFragment extends Fragment {
         if (locationListener != null) {
             lastKnownLocation = locationListener.getLastKnownLocation();
             if (lastKnownLocation != null) {
-                Log.d("Test1", "lastLocation: "+String.valueOf(lastKnownLocation));
+                Log.d("Location", "lastLocation: "+String.valueOf(lastKnownLocation));
                 latitude = lastKnownLocation.getLatitude();
                 longitude = lastKnownLocation.getLongitude();
                 address = getCompleteAddressString(latitude, longitude);
-                Log.d("Test1", "lastLocation latitude: "+latitude);
-                Log.d("Test1", "lastLocation address: "+ address);
             }
         }
     }
