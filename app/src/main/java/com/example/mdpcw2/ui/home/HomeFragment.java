@@ -33,19 +33,29 @@ import java.util.Objects;
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
+    HomeViewModel homeViewModel;
     boolean mBound = false;
-    private LocationService mService;
     private MyLocationListener locationListener;
+    TextView currentLocation;
+    Location lastKnownLocation;
+    double latitude;
+    double longitude;
+    String address;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
 
-        return binding.getRoot();
+        if(!mBound){
+            Intent serviceIntent = new Intent(requireActivity(), LocationService.class);
+            requireActivity().bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+        }
+
+        return root;
     }
 
     @Override
@@ -54,6 +64,7 @@ public class HomeFragment extends Fragment {
 
         Button startExerciseButton = view.findViewById(R.id.homeStartExerciseButton);
         Button stopExerciseButton = view.findViewById(R.id.homeStopExerciseButton);
+        currentLocation = (TextView) view.findViewById(R.id.homeCurrentLocationTextView);
 
         startExerciseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +92,7 @@ public class HomeFragment extends Fragment {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
-            mService = binder.getService();
+            LocationService mService = binder.getService();
             locationListener = mService.getLocationListener();
             mBound = true;
             Log.d("Service", "Service connected");
@@ -97,32 +108,22 @@ public class HomeFragment extends Fragment {
 
     public void onStartExerciseClick(View v) {
         Log.d("Button", "Home Start Button");
-        if(!mBound) {
-            Intent serviceIntent = new Intent(requireActivity(), LocationService.class);
-            requireActivity().bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+        lastLocation();
 
-            if (locationListener != null) {
-                Location lastKnownLocation = locationListener.getLastKnownLocation();
-                if (lastKnownLocation != null) {
-                    double latitude = lastKnownLocation.getLatitude();
-                    double longitude = lastKnownLocation.getLongitude();
-                    Log.d("Location", "Last known location: " + latitude + " " + longitude);
-                    getCompleteAddressString(latitude, longitude);
-                }
-            }
+        if (address != null) {
+            currentLocation.setText(address);
+        } else {
+            Log.d("Test1", "Address null");
         }
     }
 
     public void onStopExerciseClick(View v) {
         Log.d("Button", "Home Stop Button");
-        if(mBound) {
-            requireActivity().unbindService(serviceConnection);
-            mBound = false;
-        }
+        Log.d("Test1", "onStopButtonClick: "+address);
 
     }
 
-    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+    public String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
         String strAdd = "";
         Geocoder geocoder = new Geocoder(requireActivity(), Locale.getDefault());
         try {
@@ -135,7 +136,7 @@ public class HomeFragment extends Fragment {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
                 strAdd = strReturnedAddress.toString();
-                Log.w("Address", strReturnedAddress.toString());
+                Log.w("Test1", "getCompleteStringAddress: "+strReturnedAddress.toString());
             } else {
                 Log.w("Address", "No Address returned");
             }
@@ -144,6 +145,20 @@ public class HomeFragment extends Fragment {
             Log.w("Address", "Cannot Get Address");
         }
         return strAdd;
+    }
+
+    public void lastLocation() {
+        if (locationListener != null) {
+            lastKnownLocation = locationListener.getLastKnownLocation();
+            if (lastKnownLocation != null) {
+                Log.d("Test1", "lastLocation: "+String.valueOf(lastKnownLocation));
+                latitude = lastKnownLocation.getLatitude();
+                longitude = lastKnownLocation.getLongitude();
+                address = getCompleteAddressString(latitude, longitude);
+                Log.d("Test1", "lastLocation latitude: "+latitude);
+                Log.d("Test1", "lastLocation address: "+ address);
+            }
+        }
     }
 
     @Override

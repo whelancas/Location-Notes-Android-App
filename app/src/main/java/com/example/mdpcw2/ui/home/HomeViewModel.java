@@ -14,27 +14,15 @@ import com.example.mdpcw2.LocationService;
 
 public class HomeViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mText;
+    private final MutableLiveData<String> mCurrentLocationText = new MutableLiveData<>();
 
-    public HomeViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+    public LiveData<String> getCurrentLocationText() {
+        return mCurrentLocationText;
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public void setCurrentLocation(String location) {
+        mCurrentLocationText.setValue(location);
     }
-
-    private ServiceConnection connection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service) {
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            boolean mBound = false;
-        }
-    };
 
 }
+
