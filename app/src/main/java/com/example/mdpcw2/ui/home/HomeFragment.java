@@ -37,6 +37,7 @@ public class HomeFragment extends Fragment {
     boolean mBound = false;
     private MyLocationListener locationListener;
     TextView startLocation;
+    TextView endLocation;
     Location lastKnownLocation;
     double latitude;
     double longitude;
@@ -65,6 +66,7 @@ public class HomeFragment extends Fragment {
         Button startExerciseButton = view.findViewById(R.id.homeStartExerciseButton);
         Button stopExerciseButton = view.findViewById(R.id.homeStopExerciseButton);
         startLocation = (TextView) view.findViewById(R.id.homeStartLocationTextView);
+        endLocation = (TextView) view.findViewById(R.id.homeEndLocationTextView);
 
         startExerciseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +114,7 @@ public class HomeFragment extends Fragment {
 
         if (address != null) {
             String startLocationText = "Start Location: " + address;
-            homeViewModel.setStartLocation(startLocationText);
+            homeViewModel.setStartLocation(address);
             startLocation.setText(startLocationText);
         } else {
             Log.d("Address", "Address null onStartButton");
@@ -121,7 +123,15 @@ public class HomeFragment extends Fragment {
 
     public void onStopExerciseClick(View v) {
         Log.d("Button", "Home Stop Button");
+        lastLocation();
 
+        if (address != null) {
+            String endLocationText = "End Location: " + address;
+            homeViewModel.setEndLocation(address);
+            endLocation.setText(endLocationText);
+        } else {
+            Log.d("Address", "Address null onStartButton");
+        }
     }
 
     public String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
@@ -139,7 +149,7 @@ public class HomeFragment extends Fragment {
                 strAdd = strReturnedAddress.toString();
                 Log.w("Address", "getCompleteStringAddress: "+strReturnedAddress.toString());
             } else {
-                Log.w("Address", "No Address returned");
+                Log.w("Address", "No Address Returned");
             }
         } catch (Exception e) {
             e.printStackTrace();
