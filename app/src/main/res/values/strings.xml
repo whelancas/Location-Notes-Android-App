@@ -3,4 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_reminders">Reminders</string>
     <string name="title_notebook">Notebook</string>
+    <string name="title_new_note">New Note</string>
+    <string name="title_new_reminder">New Reminder</string>
 </resources>

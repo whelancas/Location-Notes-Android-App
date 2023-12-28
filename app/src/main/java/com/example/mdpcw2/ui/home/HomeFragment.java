@@ -136,7 +136,6 @@ public class HomeFragment extends Fragment {
 
             endLatitude = latitude;
             endLongitude = longitude;
-            // TODO: ViewModel these
 
             Location startPoint=new Location("Start");
             startPoint.setLatitude(startLatitude);

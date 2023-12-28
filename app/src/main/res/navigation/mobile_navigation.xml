@@ -15,11 +15,29 @@
         android:id="@+id/navigation_reminders"
         android:name="com.example.mdpcw2.ui.reminders.RemindersFragment"
         android:label="@string/title_reminders"
-        tools:layout="@layout/fragment_reminders" />
+        tools:layout="@layout/fragment_reminders" >
+        <action
+            android:id="@+id/action_navigation_reminders_to_newReminderFragment"
+            app:destination="@id/navigation_new_reminder" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_notebook"
         android:name="com.example.mdpcw2.ui.notebook.NotebookFragment"
         android:label="@string/title_notebook"
-        tools:layout="@layout/fragment_notebook" />
+        tools:layout="@layout/fragment_notebook" >
+        <action
+            android:id="@+id/action_navigation_notebook_to_newNoteFragment"
+            app:destination="@id/navigation_new_note" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_new_note"
+        android:name="com.example.mdpcw2.ui.notebook.newnote.NewNoteFragment"
+        android:label="@string/title_new_note"
+        tools:layout="@layout/fragment_new_note" />
+    <fragment
+        android:id="@+id/navigation_new_reminder"
+        android:name="com.example.mdpcw2.ui.reminders.newreminder.NewReminderFragment"
+        android:label="@string/title_new_reminder"
+        tools:layout="@layout/fragment_new_reminder" />
 </navigation>
