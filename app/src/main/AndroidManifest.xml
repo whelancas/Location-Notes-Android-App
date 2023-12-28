@@ -30,7 +30,7 @@
         </activity>
 
         <service
-            android:name=".LocationService"
+            android:name=".service.LocationService"
             android:enabled="true"
             android:exported="false" />
 

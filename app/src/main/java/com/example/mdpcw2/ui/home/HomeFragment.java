@@ -1,6 +1,5 @@
 package com.example.mdpcw2.ui.home;
 
-import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -22,8 +21,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.mdpcw2.LocationService;
-import com.example.mdpcw2.MyLocationListener;
+import com.example.mdpcw2.service.LocationService;
+import com.example.mdpcw2.service.MyLocationListener;
 import com.example.mdpcw2.R;
 import com.example.mdpcw2.databinding.FragmentHomeBinding;
 

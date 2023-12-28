@@ -1,4 +1,4 @@
-package com.example.mdpcw2;
+package com.example.mdpcw2.service;
 
 import android.location.Location;
 import android.location.LocationListener;
