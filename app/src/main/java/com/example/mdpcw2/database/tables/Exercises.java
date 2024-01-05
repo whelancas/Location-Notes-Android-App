@@ -27,7 +27,8 @@ public class Exercises {
     @NonNull
     public String endLongitude;
 
-    public Exercises(String date, String startTime, String startLatitude, String startLongitude, String endTime, String endLatitude, String endLongitude) {
+    public Exercises(@NonNull String date, @NonNull String startTime, @NonNull String startLatitude,
+                     @NonNull String startLongitude, @NonNull String endTime, @NonNull String endLatitude, @NonNull String endLongitude) {
         this.date = date;
         this.startTime = startTime;
         this.startLatitude = startLatitude;

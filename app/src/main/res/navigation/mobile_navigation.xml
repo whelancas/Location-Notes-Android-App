@@ -9,7 +9,11 @@
         android:id="@+id/navigation_home"
         android:name="com.example.mdpcw2.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_new_note"
+            app:destination="@id/navigation_new_note" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_reminders"
@@ -25,19 +29,15 @@
         android:id="@+id/navigation_notebook"
         android:name="com.example.mdpcw2.ui.notebook.NotebookFragment"
         android:label="@string/title_notebook"
-        tools:layout="@layout/fragment_notebook" >
-        <action
-            android:id="@+id/action_navigation_notebook_to_newNoteFragment"
-            app:destination="@id/navigation_new_note" />
-    </fragment>
+        tools:layout="@layout/fragment_notebook" />
     <fragment
         android:id="@+id/navigation_new_note"
-        android:name="com.example.mdpcw2.ui.notebook.newnote.NewNoteFragment"
+        android:name="com.example.mdpcw2.ui.newnote.NewNoteFragment"
         android:label="@string/title_new_note"
         tools:layout="@layout/fragment_new_note" />
     <fragment
         android:id="@+id/navigation_new_reminder"
-        android:name="com.example.mdpcw2.ui.reminders.newreminder.NewReminderFragment"
+        android:name="com.example.mdpcw2.ui.newreminder.NewReminderFragment"
         android:label="@string/title_new_reminder"
         tools:layout="@layout/fragment_new_reminder" />
 </navigation>

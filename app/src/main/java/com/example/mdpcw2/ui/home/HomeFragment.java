@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.example.mdpcw2.service.LocationService;
 import com.example.mdpcw2.service.MyLocationListener;
@@ -65,6 +66,14 @@ public class HomeFragment extends Fragment {
         startLocation = (TextView) view.findViewById(R.id.homeStartLocationTextView);
         endLocation = (TextView) view.findViewById(R.id.homeEndLocationTextView);
         distanceTravelled = (TextView) view.findViewById(R.id.homeDistanceTravelledTodayTextView);
+        Button newNoteButton = view.findViewById(R.id.homeAddNoteButton);
+
+        newNoteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onHomeAddNoteClick(v);
+            }
+        });
 
         startExerciseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +127,10 @@ public class HomeFragment extends Fragment {
             startLatitude = latitude;
             startLongitude = longitude;
             // TODO: ViewModel these
-            // TODO: Clear previous exercise
+
+            String endLocationText = "End Location: ";
+            endLocation.setText(endLocationText);
+            distanceTravelled.setText("Distance Travelled: ");
         } else {
             Log.d("Address", "Address null onStartButton");
         }
@@ -150,6 +162,10 @@ public class HomeFragment extends Fragment {
         } else {
             Log.d("Address", "Address null onStartButton");
         }
+    }
+
+    public void onHomeAddNoteClick(View v) {
+        Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_new_note);
     }
 
     public StringBuilder getAddress(double LATITUDE, double LONGITUDE) {

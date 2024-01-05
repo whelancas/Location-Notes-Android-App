@@ -1,4 +1,4 @@
-package com.example.mdpcw2.ui.reminders.newreminder;
+package com.example.mdpcw2.ui.newreminder;
 
 import androidx.lifecycle.ViewModel;
 

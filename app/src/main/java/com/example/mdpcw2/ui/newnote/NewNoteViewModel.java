@@ -1,4 +1,4 @@
-package com.example.mdpcw2.ui.notebook.newnote;
+package com.example.mdpcw2.ui.newnote;
 
 import androidx.lifecycle.ViewModel;
 

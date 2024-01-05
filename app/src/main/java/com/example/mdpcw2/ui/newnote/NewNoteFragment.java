@@ -1,4 +1,4 @@
-package com.example.mdpcw2.ui.notebook.newnote;
+package com.example.mdpcw2.ui.newnote;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
