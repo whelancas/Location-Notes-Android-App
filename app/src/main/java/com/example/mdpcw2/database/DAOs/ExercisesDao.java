@@ -1,4 +1,4 @@
-package com.example.mdpcw2.database.DOAs;
+package com.example.mdpcw2.database.DAOs;
 
 import androidx.room.Dao;
 import androidx.room.Delete;

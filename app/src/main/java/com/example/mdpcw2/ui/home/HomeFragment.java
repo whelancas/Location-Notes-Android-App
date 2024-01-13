@@ -19,6 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -27,8 +28,11 @@ import com.example.mdpcw2.service.MyLocationListener;
 import com.example.mdpcw2.R;
 import com.example.mdpcw2.databinding.FragmentHomeBinding;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
 
@@ -44,7 +48,7 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(this, new SavedStateViewModelFactory(requireActivity().getApplication(), this)).get(HomeViewModel.class);
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -120,13 +124,21 @@ public class HomeFragment extends Fragment {
         lastLocation();
 
         if (address != null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                LocalDate date = LocalDate.now();
+                LocalTime startTime = LocalTime.now();
+                Log.d("DateTime", date + " " + startTime);
+            }
+
             String startLocationText = "Start Location: " + address;
             homeViewModel.setStartLocation(address);
             startLocation.setText(startLocationText);
 
             startLatitude = latitude;
             startLongitude = longitude;
-            // TODO: ViewModel these
+
+            homeViewModel.setStartLatitude(String.valueOf(startLatitude));
+            homeViewModel.setStartLongitude(String.valueOf(startLongitude));
 
             String endLocationText = "End Location: ";
             endLocation.setText(endLocationText);
@@ -141,6 +153,11 @@ public class HomeFragment extends Fragment {
         lastLocation();
 
         if (address != null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                LocalTime endTime = LocalTime.now();
+                Log.d("DateTime", String.valueOf(endTime));
+            }
+
             String endLocationText = "End Location: " + address;
             homeViewModel.setEndLocation(address);
             endLocation.setText(endLocationText);
@@ -148,17 +165,20 @@ public class HomeFragment extends Fragment {
             endLatitude = latitude;
             endLongitude = longitude;
 
-            Location startPoint=new Location("Start");
+            homeViewModel.setEndLatitude(String.valueOf(endLatitude));
+            homeViewModel.setEndLongitude(String.valueOf(endLongitude));
+
+            Location startPoint = new Location("Start");
             startPoint.setLatitude(startLatitude);
             startPoint.setLongitude(startLongitude);
 
-            Location endPoint=new Location("End");
+            Location endPoint = new Location("End");
             endPoint.setLatitude(endLatitude);
             endPoint.setLongitude(endLongitude);
 
             double distance = startPoint.distanceTo(endPoint);
+            homeViewModel.setDistanceTravelled(String.valueOf(distance));
             distanceTravelled.setText("Distance Travelled: " + (int) distance + " metres");
-            //TODO: ViewModel this
         } else {
             Log.d("Address", "Address null onStartButton");
         }
