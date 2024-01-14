@@ -1,9 +1,17 @@
 package com.example.mdpcw2.service;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.example.mdpcw2.MainActivity;
+
+import java.util.List;
+import java.util.Locale;
 
 public class MyLocationListener implements LocationListener {
     private Location lastKnownLocation;
@@ -43,4 +51,40 @@ public class MyLocationListener implements LocationListener {
     public Location getLastKnownLocation() {
         return lastKnownLocation;
     }
+
+    public double getDistance(double startLat, double startLong, double endLat, double endLong) {
+        Location startPoint = new Location("Start");
+        startPoint.setLatitude(startLat);
+        startPoint.setLongitude(startLong);
+
+        Location endPoint = new Location("End");
+        endPoint.setLatitude(endLat);
+        endPoint.setLongitude(endLong);
+
+        return startPoint.distanceTo(endPoint);
+    }
+
+    public StringBuilder getAddress(Context context, double LATITUDE, double LONGITUDE) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        StringBuilder strAddress = null;
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                strAddress = new StringBuilder("");
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                Log.w("Address", "getCompleteStringAddress: " + strAddress);
+            } else {
+                Log.w("Address", "No Address Returned");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.w("Address", "Cannot Get Address");
+        }
+        return strAddress;
+    }
+
 }

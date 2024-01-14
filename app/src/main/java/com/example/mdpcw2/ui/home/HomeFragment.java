@@ -22,7 +22,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.SavedStateViewModelFactory;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.room.Room;
 
+import com.example.mdpcw2.MainActivity;
+import com.example.mdpcw2.database.AppDatabase;
+import com.example.mdpcw2.database.DAOs.ExercisesDao;
+import com.example.mdpcw2.database.tables.Exercises;
 import com.example.mdpcw2.service.LocationService;
 import com.example.mdpcw2.service.MyLocationListener;
 import com.example.mdpcw2.R;
@@ -33,16 +38,23 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+
+import kotlinx.coroutines.CoroutineScope;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     HomeViewModel homeViewModel;
+    AppDatabase db;
+    ExercisesDao exercisesDao;
     boolean mBound = false;
     private MyLocationListener locationListener;
     TextView startLocation, endLocation, distanceTravelled;
     Location lastKnownLocation;
     double latitude, startLatitude, endLatitude, longitude, startLongitude, endLongitude;
+    LocalDate date;
+    LocalTime startTime, endTime;
     String address;
 
 
@@ -57,6 +69,9 @@ public class HomeFragment extends Fragment {
             Intent serviceIntent = new Intent(requireActivity(), LocationService.class);
             requireActivity().bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
         }
+
+        db = Room.databaseBuilder(requireActivity(), AppDatabase.class, "AppDatabase").build();
+        exercisesDao  = db.exercisesDao();
 
         return root;
     }
@@ -125,10 +140,14 @@ public class HomeFragment extends Fragment {
 
         if (address != null) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                LocalDate date = LocalDate.now();
-                LocalTime startTime = LocalTime.now();
+                date = LocalDate.now();
+                startTime = LocalTime.now();
                 Log.d("DateTime", date + " " + startTime);
             }
+
+            String endLocationText = "End Location: ";
+            endLocation.setText(endLocationText);
+            distanceTravelled.setText("Distance Travelled: ");
 
             String startLocationText = "Start Location: " + address;
             homeViewModel.setStartLocation(address);
@@ -140,9 +159,6 @@ public class HomeFragment extends Fragment {
             homeViewModel.setStartLatitude(String.valueOf(startLatitude));
             homeViewModel.setStartLongitude(String.valueOf(startLongitude));
 
-            String endLocationText = "End Location: ";
-            endLocation.setText(endLocationText);
-            distanceTravelled.setText("Distance Travelled: ");
         } else {
             Log.d("Address", "Address null onStartButton");
         }
@@ -154,7 +170,7 @@ public class HomeFragment extends Fragment {
 
         if (address != null) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                LocalTime endTime = LocalTime.now();
+                endTime = LocalTime.now();
                 Log.d("DateTime", String.valueOf(endTime));
             }
 
@@ -168,17 +184,14 @@ public class HomeFragment extends Fragment {
             homeViewModel.setEndLatitude(String.valueOf(endLatitude));
             homeViewModel.setEndLongitude(String.valueOf(endLongitude));
 
-            Location startPoint = new Location("Start");
-            startPoint.setLatitude(startLatitude);
-            startPoint.setLongitude(startLongitude);
-
-            Location endPoint = new Location("End");
-            endPoint.setLatitude(endLatitude);
-            endPoint.setLongitude(endLongitude);
-
-            double distance = startPoint.distanceTo(endPoint);
+            double distance = locationListener.getDistance(startLatitude, startLongitude,endLatitude, endLongitude);
             homeViewModel.setDistanceTravelled(String.valueOf(distance));
             distanceTravelled.setText("Distance Travelled: " + (int) distance + " metres");
+
+            Executors.newSingleThreadExecutor().execute(() -> {
+                exercisesDao.insert(new Exercises(date, startTime, startLatitude,
+                        startLongitude, endTime, endLatitude, endLongitude));
+            });
         } else {
             Log.d("Address", "Address null onStartButton");
         }
@@ -188,37 +201,15 @@ public class HomeFragment extends Fragment {
         Navigation.findNavController(v).navigate(R.id.action_navigation_home_to_navigation_new_note);
     }
 
-    public StringBuilder getAddress(double LATITUDE, double LONGITUDE) {
-        Geocoder geocoder = new Geocoder(requireActivity(), Locale.getDefault());
-        StringBuilder strAddress = null;
-        try {
-            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
-            if (addresses != null) {
-                Address returnedAddress = addresses.get(0);
-                strAddress = new StringBuilder("");
-
-                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
-                    strAddress.append(returnedAddress.getAddressLine(i)).append("\n");
-                }
-                Log.w("Address", "getCompleteStringAddress: " + strAddress);
-            } else {
-                Log.w("Address", "No Address Returned");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.w("Address", "Cannot Get Address");
-        }
-        return strAddress;
-    }
-
     public void lastLocation() {
         if (locationListener != null) {
             lastKnownLocation = locationListener.getLastKnownLocation();
+            Geocoder geocoder = new Geocoder(requireActivity(), Locale.getDefault());
             if (lastKnownLocation != null) {
-                Log.d("Location", "lastLocation: "+ lastKnownLocation);
+                Log.d("Location", "lastLocation: " + lastKnownLocation);
                 latitude = lastKnownLocation.getLatitude();
                 longitude = lastKnownLocation.getLongitude();
-                address = String.valueOf(getAddress(latitude, longitude));
+                address = String.valueOf(locationListener.getAddress(requireActivity(), latitude, longitude));
             }
         }
     }

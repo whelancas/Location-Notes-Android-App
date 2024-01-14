@@ -1,11 +1,11 @@
 package com.example.mdpcw2.database.tables;
 
 import androidx.annotation.NonNull;
-import androidx.room.Dao;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 public class Exercises {
@@ -27,15 +27,46 @@ public class Exercises {
     @NonNull
     public String endLongitude;
 
-    public Exercises(@NonNull String date, @NonNull String startTime, @NonNull String startLatitude,
-                     @NonNull String startLongitude, @NonNull String endTime, @NonNull String endLatitude, @NonNull String endLongitude) {
-        this.date = date;
-        this.startTime = startTime;
-        this.startLatitude = startLatitude;
-        this.startLongitude = startLongitude;
-        this.endTime = endTime;
-        this.endLatitude = endLatitude;
-        this.endLongitude = endLongitude;
+    public Exercises() {
+    }
+
+    public Exercises(@NonNull LocalDate date, @NonNull LocalTime startTime, double startLatitude,
+                     double startLongitude, @NonNull LocalTime endTime, double endLatitude, double endLongitude) {
+        this.date = String.valueOf(date);
+        this.startTime = String.valueOf(startTime);
+        this.startLatitude = String.valueOf(startLatitude);
+        this.startLongitude = String.valueOf(startLongitude);
+        this.endTime = String.valueOf(endTime);
+        this.endLatitude = String.valueOf(endLatitude);
+        this.endLongitude = String.valueOf(endLongitude);
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public String getStartLatitude() {
+        return startLatitude;
+    }
+
+    public String getStartLongitude() {
+        return startLongitude;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public String getEndLatitude() {
+        return endLatitude;
+    }
+
+    public String getEndLongitude() {
+        return endLongitude;
     }
 }
 
