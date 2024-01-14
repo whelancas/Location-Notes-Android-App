@@ -34,10 +34,18 @@
         android:id="@+id/navigation_new_note"
         android:name="com.example.mdpcw2.ui.newnote.NewNoteFragment"
         android:label="@string/title_new_note"
-        tools:layout="@layout/fragment_new_note" />
+        tools:layout="@layout/fragment_new_note" >
+        <action
+            android:id="@+id/action_navigation_new_note_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_new_reminder"
         android:name="com.example.mdpcw2.ui.newreminder.NewReminderFragment"
         android:label="@string/title_new_reminder"
-        tools:layout="@layout/fragment_new_reminder" />
+        tools:layout="@layout/fragment_new_reminder" >
+        <action
+            android:id="@+id/action_navigation_new_reminder_to_navigation_reminders"
+            app:destination="@id/navigation_reminders" />
+    </fragment>
 </navigation>
