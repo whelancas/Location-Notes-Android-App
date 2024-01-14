@@ -56,6 +56,7 @@ public class HomeFragment extends Fragment {
     LocalDate date;
     LocalTime startTime, endTime;
     String address;
+    Button newNoteButton;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -85,7 +86,7 @@ public class HomeFragment extends Fragment {
         startLocation = (TextView) view.findViewById(R.id.homeStartLocationTextView);
         endLocation = (TextView) view.findViewById(R.id.homeEndLocationTextView);
         distanceTravelled = (TextView) view.findViewById(R.id.homeDistanceTravelledTodayTextView);
-        Button newNoteButton = view.findViewById(R.id.homeAddNoteButton);
+        newNoteButton = view.findViewById(R.id.homeAddNoteButton);
 
         newNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,6 +193,7 @@ public class HomeFragment extends Fragment {
                 exercisesDao.insert(new Exercises(date, startTime, startLatitude,
                         startLongitude, endTime, endLatitude, endLongitude));
             });
+            newNoteButton.setVisibility(View.VISIBLE);
         } else {
             Log.d("Address", "Address null onStartButton");
         }
