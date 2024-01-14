@@ -16,8 +16,18 @@ public class Notes {
     public String note;
     public int exerciseID;
 
+    public Notes() {}
+
     public Notes(String tags, String note) {
         this.tags = tags;
         this.note = note;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public String getTags() {
+        return tags;
     }
 }

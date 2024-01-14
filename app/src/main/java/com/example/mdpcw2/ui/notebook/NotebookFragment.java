@@ -29,7 +29,6 @@ public class NotebookFragment extends Fragment {
     private FragmentNotebookBinding binding;
     AppDatabase db;
     ExercisesDao exercisesDao;
-    double startLatitude, startLongitude, endLatitude, endLongitude;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {

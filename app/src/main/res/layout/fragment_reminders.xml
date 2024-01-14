@@ -9,11 +9,12 @@
 
     <ListView
         android:id="@+id/remidersListView"
-        android:layout_width="413dp"
-        android:layout_height="626dp"
-        android:layout_marginBottom="1dp"
+        android:layout_width="384dp"
+        android:layout_height="619dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.481"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button

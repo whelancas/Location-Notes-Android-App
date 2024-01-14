@@ -1,5 +1,6 @@
 package com.example.mdpcw2.ui.notebook;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Geocoder;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ public class ExercisesArrayAdapter extends ArrayAdapter<Exercises> {
         super(context, 0, objects);
     }
 
+    @SuppressLint("SetTextI18n")
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -47,9 +49,9 @@ public class ExercisesArrayAdapter extends ArrayAdapter<Exercises> {
         if (exercises != null) {
             String startAddress = String.valueOf(locationListener.getAddress(getContext(), Double.parseDouble(exercises.getStartLatitude()), Double.parseDouble(exercises.getStartLongitude())));
             String endAddress = String.valueOf(locationListener.getAddress(getContext(), Double.parseDouble(exercises.getEndLatitude()), Double.parseDouble(exercises.getEndLongitude())));
-            double distance = locationListener.getDistance(Double.parseDouble(exercises.getStartLatitude()),
+            @SuppressLint("DefaultLocale") double distance = Double.parseDouble(String.format("%.2f", locationListener.getDistance(Double.parseDouble(exercises.getStartLatitude()),
                     Double.parseDouble(exercises.getStartLongitude()), Double.parseDouble(exercises.getEndLatitude()),
-                    Double.parseDouble(exercises.getEndLongitude()));
+                    Double.parseDouble(exercises.getEndLongitude()))));
 
             textViewDate.setText("Date: " + exercises.getDate());
             textViewStartTime.setText("Start Time: " + exercises.getStartTime());

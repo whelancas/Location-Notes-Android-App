@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.mdpcw2.MainActivity;
+import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -85,6 +87,30 @@ public class MyLocationListener implements LocationListener {
             Log.w("Address", "Cannot Get Address");
         }
         return strAddress;
+    }
+
+    public LatLng getLocationFromAddress(Context context, String strAddress) {
+
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+        LatLng latLong = null;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+
+            Address location = address.get(0);
+            latLong = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        return latLong;
     }
 
 }

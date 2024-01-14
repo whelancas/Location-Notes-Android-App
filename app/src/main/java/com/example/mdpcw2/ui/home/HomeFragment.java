@@ -204,7 +204,6 @@ public class HomeFragment extends Fragment {
     public void lastLocation() {
         if (locationListener != null) {
             lastKnownLocation = locationListener.getLastKnownLocation();
-            Geocoder geocoder = new Geocoder(requireActivity(), Locale.getDefault());
             if (lastKnownLocation != null) {
                 Log.d("Location", "lastLocation: " + lastKnownLocation);
                 latitude = lastKnownLocation.getLatitude();
