@@ -113,7 +113,8 @@ public class NewReminderFragment extends Fragment {
     private void useCustomLocation(View v) {
 
         Executors.newSingleThreadExecutor().execute(() -> {
-            LatLng latLong = locationListener.getLocationFromAddress(getContext(), String.valueOf(address));
+            Log.d("Address", address.getText().toString());
+            LatLng latLong = locationListener.getLocationFromAddress(getContext(), address.getText().toString());
             remindersDao.insert(new Reminders(String.valueOf(latLong.latitude), String.valueOf(latLong.longitude), reminder.getText().toString()));
         });
 
@@ -123,8 +124,10 @@ public class NewReminderFragment extends Fragment {
     private void useCurrentLocation(View v) {
 
         Executors.newSingleThreadExecutor().execute(() -> {
-            Location location = locationListener.getLastKnownLocation();
-            remindersDao.insert(new Reminders(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), reminder.getText().toString()));
+            if(address != null) {
+                Location location = locationListener.getLastKnownLocation();
+                remindersDao.insert(new Reminders(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), reminder.getText().toString()));
+            }
         });
 
         Navigation.findNavController(v).navigate(R.id.action_navigation_new_reminder_to_navigation_reminders);

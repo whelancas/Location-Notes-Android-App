@@ -3,6 +3,7 @@ package com.example.mdpcw2.ui.reminders;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,11 @@ import java.util.List;
 
 public class RemindersArrayAdapter extends ArrayAdapter<Reminders> {
 
-    MyLocationListener locationListener = new MyLocationListener();
+    MyLocationListener locationListener;
 
-    public RemindersArrayAdapter(@NonNull Context context, @NonNull List<Reminders> objects) {
+    public RemindersArrayAdapter(@NonNull Context context, @NonNull List<Reminders> objects, MyLocationListener locationListener) {
         super(context, 0, objects);
+        this.locationListener = locationListener;
     }
 
     @SuppressLint({"DefaultLocale", "SetTextI18n"})
@@ -50,9 +52,12 @@ public class RemindersArrayAdapter extends ArrayAdapter<Reminders> {
             double distance = 0;
 
             if(RemindersFragment.lastKnownLocation != null) {
+                Log.d("Distance", "lastKnownLocation = " + RemindersFragment.lastKnownLocation);
                 distance = Double.parseDouble(String.format("%.2f", locationListener.getDistance(Double.parseDouble(reminders.getLatitude()),
                         Double.parseDouble(reminders.getLongitude()), Double.parseDouble(String.valueOf(RemindersFragment.lastKnownLocation.getLatitude())),
                         Double.parseDouble(String.valueOf(RemindersFragment.lastKnownLocation.getLongitude())))));
+            } else {
+                Log.d("Distance", "lastKnownLocation = null");
             }
 
             textViewReminder.setText("Reminder: " + reminders.getReminder());
@@ -61,5 +66,10 @@ public class RemindersArrayAdapter extends ArrayAdapter<Reminders> {
         }
 
         return convertView;
+    }
+
+    public void updateLastKnownLocation(Location location) {
+        locationListener.setLastKnownLocation(location);
+        notifyDataSetChanged(); // Notify the adapter that the data has changed
     }
 }

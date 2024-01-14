@@ -88,21 +88,23 @@ public class RemindersFragment extends Fragment {
 
         Button newReminderButton = view.findViewById(R.id.remindersAddReminderButton);
 
-        if(mBound) {
-            lastKnownLocation = locationListener.getLastKnownLocation();
-            Log.d("Reminders", String.valueOf(lastKnownLocation));
-        }
-
         Executors.newSingleThreadExecutor().execute(() -> {
             List<Reminders> remindersList = remindersDao.getAll();
 
             // Update UI on the main thread
             requireActivity().runOnUiThread(() -> {
-                if(!remindersList.isEmpty() && remindersList != null) {
+                if(!remindersList.isEmpty()) {
                     ListView listView = view.findViewById(R.id.remidersListView);
                     RemindersArrayAdapter arrayAdapter = new RemindersArrayAdapter(
                             requireActivity(),
-                            remindersList);
+                            remindersList,
+                            locationListener);
+
+                    if (mBound) {
+                        lastKnownLocation = locationListener.getLastKnownLocation();
+                        arrayAdapter.updateLastKnownLocation(lastKnownLocation); // Update the adapter
+                        Log.d("Reminders", String.valueOf(lastKnownLocation));
+                    }
 
                     listView.setAdapter(arrayAdapter);
                 }
@@ -118,6 +120,17 @@ public class RemindersFragment extends Fragment {
     }
 
     public void onReminderAddReminderClick(View v) {
+        Location lastKnownLocation = locationListener.getLastKnownLocation();
+
+        if (lastKnownLocation != null) {
+            // Process lastKnownLocation here
+            double latitude = lastKnownLocation.getLatitude();
+            double longitude = lastKnownLocation.getLongitude();
+            Log.d("Reminders", "Last Known Location: " + latitude + ", " + longitude);
+        } else {
+            Log.d("Reminders", "Last Known Location is null");
+        }
+
         Navigation.findNavController(v).navigate(R.id.action_navigation_reminders_to_newReminderFragment);
     }
 

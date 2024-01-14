@@ -28,6 +28,10 @@ public class MyLocationListener implements LocationListener {
         Log.d("Location", latitude + " " + longitude);
     }
 
+    public void setLastKnownLocation(Location location) {
+        lastKnownLocation = location;
+    }
+
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // Handle status changes if needed
@@ -98,12 +102,14 @@ public class MyLocationListener implements LocationListener {
         try {
             // May throw an IOException
             address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
+            if (address == null || address.isEmpty()) {
+                Log.d("Address", "Address is null");
                 return null;
             }
 
             Address location = address.get(0);
             latLong = new LatLng(location.getLatitude(), location.getLongitude() );
+            Log.d("Address", "Address: " + address + " gives lat/long: " + latLong);
 
         } catch (IOException ex) {
 
